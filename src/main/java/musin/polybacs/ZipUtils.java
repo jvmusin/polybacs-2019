@@ -12,9 +12,10 @@ import org.apache.commons.compress.utils.IOUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @UtilityClass
 public class ZipUtils {
@@ -38,21 +39,20 @@ public class ZipUtils {
     }
 
     @SneakyThrows
-    public void zip(Path sourceFolder, Path zipFile) {
+    public void zip(Path sourceFolder, Path zipFile, String addParent) {
+        List<Path> files = Files.walk(sourceFolder).filter(f -> !f.equals(sourceFolder)).collect(Collectors.toList());
         Files.createDirectories(zipFile.getParent());
         if (Files.notExists(zipFile)) Files.createFile(zipFile);
-        try (ArchiveOutputStream os = new ZipArchiveOutputStream(zipFile.toFile());
-             Stream<Path> files = Files.walk(sourceFolder)) {
-            for (Path path : files.collect(Collectors.toList())) {
-                if (path.equals(sourceFolder)) continue;
-                ArchiveEntry ae = os.createArchiveEntry(path.toFile(), sourceFolder.relativize(path).toFile().toString());
+        try (ArchiveOutputStream os = new ZipArchiveOutputStream(zipFile.toFile())) {
+            for (Path path : files) {
+                Path zipPath = sourceFolder.relativize(path);
+                if (addParent != null) zipPath = Paths.get(addParent).resolve(zipPath);
+                ArchiveEntry ae = os.createArchiveEntry(path.toFile(), zipPath.toFile().toString().replace('\\', '/'));
                 os.putArchiveEntry(ae);
                 if (Files.isRegularFile(path))
                     Files.copy(path, os);
                 os.closeArchiveEntry();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

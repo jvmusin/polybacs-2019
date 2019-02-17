@@ -19,5 +19,6 @@ public class Problem {
 
     private Path checker;
     private Path statement;
+    private List<Path> solutions;
     private List<Test> tests;
 }
