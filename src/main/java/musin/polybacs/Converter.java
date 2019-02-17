@@ -28,11 +28,13 @@ public class Converter {
     private final Path readyRootFolder = Paths.get("ready");
 
     public void convert(Path problemZip) {
+        System.out.println("Converting " + problemZip);
         Problem problem = unzipProblem(problemZip);
         attachStatement(problemZip, problem);
         readProblem(problem);
         prepareProblem(problem);
         zipProblem(problem);
+        System.out.println("Converted " + problemZip);
     }
 
     @SneakyThrows
@@ -169,7 +171,7 @@ public class Converter {
 
     private void readCheckerAndStatement(Problem problem) {
         Path materialsFolder = problem.getMaterialsFolder();
-        problem.setChecker(materialsFolder.resolve("files").resolve("check.cpp"));
+        problem.setChecker(materialsFolder.resolve("check.cpp"));
         if (problem.getStatement() == null)
             problem.setStatement(materialsFolder
                     .resolve("statements")
