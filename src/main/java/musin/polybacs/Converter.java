@@ -118,7 +118,10 @@ public class Converter {
     private void prepareCheckerAndStatement(Problem problem) {
         Path preparationFolder = problem.getPreparationFolder();
         Files.copy(problem.getChecker(), preparationFolder.resolve("checker/check.cpp"));
-        Files.copy(problem.getStatement(), preparationFolder.resolve("statement/problem.pdf"));
+        if (problem.getStatement() != null)
+            Files.copy(problem.getStatement(), preparationFolder.resolve("statement/problem.pdf"));
+        else
+            System.out.println("Problem has no statement!");
     }
 
     @SneakyThrows
@@ -172,13 +175,15 @@ public class Converter {
     private void readCheckerAndStatement(Problem problem) {
         Path materialsFolder = problem.getMaterialsFolder();
         problem.setChecker(materialsFolder.resolve("check.cpp"));
-        if (problem.getStatement() == null)
-            problem.setStatement(materialsFolder
+        if (problem.getStatement() == null) {
+            Path statement = materialsFolder
                     .resolve("statements")
                     .resolve(".pdf")
                     .resolve("russian")
-                    .resolve("problem.pdf")
-            );
+                    .resolve("problem.pdf");
+            if (Files.exists(statement))
+                problem.setStatement(statement);
+        }
     }
 
     @SneakyThrows

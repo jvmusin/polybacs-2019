@@ -23,3 +23,8 @@
 /nbdist/
 /.nb-gradle/
 /build/
+
+### Polybacs ###
+/prepared/
+/unzipped/
+/ready/
