@@ -27,21 +27,21 @@ public class Converter {
     private final Path preparedRootFolder = Paths.get("prepared");
     private final Path readyRootFolder = Paths.get("ready");
 
-    public void convert(Path problemZip) {
+    public void convert(Path problemZip, String problemPrefix) {
         System.out.println("Converting " + problemZip);
         Problem problem = unzipProblem(problemZip);
         attachStatement(problemZip, problem);
         readProblem(problem);
         prepareProblem(problem);
-        zipProblem(problem);
+        zipProblem(problem, problemPrefix);
         System.out.println("Converted " + problemZip);
     }
 
     @SneakyThrows
-    private void zipProblem(Problem problem) {
+    private void zipProblem(Problem problem, String problemPrefix) {
         Path zipFile = readyRootFolder.resolve(problem.getShortName() + ".zip");
         Files.deleteIfExists(zipFile);
-        ZipUtils.zip(problem.getPreparationFolder(), zipFile, problem.getShortName());
+        ZipUtils.zip(problem.getPreparationFolder(), zipFile, problemPrefix + problem.getShortName());
     }
 
     private void attachStatement(Path problemZip, Problem problem) {
