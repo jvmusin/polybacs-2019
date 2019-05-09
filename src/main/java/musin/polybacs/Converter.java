@@ -138,7 +138,7 @@ public class Converter {
 
     private void readProblem(Problem problem) {
         readProblemMeta(problem);
-        readCheckerAndStatement(problem);
+        readChecker(problem);
         readSolutions(problem);
         readTests(problem);
     }
@@ -172,18 +172,8 @@ public class Converter {
         problem.setTests(tests);
     }
 
-    private void readCheckerAndStatement(Problem problem) {
-        Path materialsFolder = problem.getMaterialsFolder();
-        problem.setChecker(materialsFolder.resolve("check.cpp"));
-        if (problem.getStatement() == null) {
-            Path statement = materialsFolder
-                    .resolve("statements")
-                    .resolve(".pdf")
-                    .resolve("russian")
-                    .resolve("problem.pdf");
-            if (Files.exists(statement))
-                problem.setStatement(statement);
-        }
+    private void readChecker(Problem problem) {
+        problem.setChecker(problem.getMaterialsFolder().resolve("check.cpp"));
     }
 
     @SneakyThrows
