@@ -9,7 +9,7 @@ import org.json.XML;
 
 import java.io.BufferedWriter;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -102,14 +102,14 @@ public class Converter {
                         "maintainers = %s\n" +
                         "\n" +
                         "[resource_limits]\n" +
-                        "time = %ds\n" +
+                        "time = %d.%ds\n" +
                         "memory = %dMiB\n",
                 problem.getFullName(),
                 problem.getMaintainers(),
-                problem.getTimeLimitMillis() / 1000,
+                problem.getTimeLimitMillis() / 1000, problem.getTimeLimitMillis() % 1000,
                 problem.getMemoryLimitBytes() / 1024 / 1024);
         Path configFile = problem.getPreparationFolder().resolve("config.ini");
-        try (BufferedWriter bw = Files.newBufferedWriter(configFile, Charset.forName("UTF-8"))) {
+        try (BufferedWriter bw = Files.newBufferedWriter(configFile, StandardCharsets.UTF_8)) {
             bw.write(config);
         }
     }
